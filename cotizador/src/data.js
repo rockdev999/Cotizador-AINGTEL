@@ -1,3 +1,4 @@
+// actualizado
 export const dealers = [
   {
     ci: 12345678,

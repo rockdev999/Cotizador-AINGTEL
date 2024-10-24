@@ -8,6 +8,7 @@ import Navbar from "./components/nav/Navbar";
 import HomeAdmin from "./pages/HomeAdmin";
 import Footer from "./components/footer/Footer";
 import About from "./pages/About";
+// actualizado
 function App() {
   return (
     <>

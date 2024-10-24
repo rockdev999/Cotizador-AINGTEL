@@ -1,5 +1,6 @@
 import { dealers } from "../data";
 import { Link } from "react-router-dom";
+// actualizado
 function ListDealers() {
   console.log(dealers);
   return (

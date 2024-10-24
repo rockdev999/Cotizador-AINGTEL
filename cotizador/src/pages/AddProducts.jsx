@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import UseForm from "../components/addproducts/UseForm";
+// actualizado
 function AddProducts() {
   const { form, dataForm } = UseForm({
     name: "",

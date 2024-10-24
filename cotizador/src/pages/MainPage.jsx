@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// actualizado
 function MainPage() {
   return (
     <div className="flex flex-col items-center p-4 gap-4">
