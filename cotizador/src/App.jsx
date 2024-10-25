@@ -8,7 +8,7 @@ import Navbar from "./components/nav/Navbar";
 import HomeAdmin from "./pages/HomeAdmin";
 import Footer from "./components/footer/Footer";
 import About from "./pages/About";
-// actualizado
+import Login from "./pages/Login";
 function App() {
   return (
     <>
@@ -22,6 +22,7 @@ function App() {
           <Route path="/list-dealers" element={<ListDealers />} />
           <Route path="/list-products" element={<ListProducts />} />
           <Route path="/home-admin" element={<HomeAdmin />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
         <Footer />
       </BrowserRouter>

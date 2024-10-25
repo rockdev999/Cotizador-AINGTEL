@@ -78,3 +78,20 @@ export const products = [
     desciption: "aqui esta la descripcion del producto",
   },
 ];
+
+export const users = [
+  {
+    email: "juan.perez@example.com",
+    password: "password123",
+  },
+
+  {
+    email: "maria.garcia@example.com",
+    password: "securePass456",
+  },
+
+  {
+    email: "carlos.lopez@example.com",
+    password: "mySecret789",
+  },
+];

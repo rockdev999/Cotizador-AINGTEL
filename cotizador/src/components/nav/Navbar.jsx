@@ -46,7 +46,7 @@ function App() {
               </div>
               <div>
                 <Link
-                  to="/home-admin"
+                  to="/login"
                   className="bg-blue-500 p-2 border-solid rounded-lg hover:bg-[#08b4c4]"
                 >
                   Iniciar Sesion
@@ -68,7 +68,7 @@ function App() {
       {/* mobile navigation */}
       <div
         className={`fixed z-40 w-full bg-gray-100 overflow-hidden flex flex-col lg:hidden gap-2  origin-top duration-500 ${
-          !toggleMenu ? "h-0" : "h-[18%]"
+          !toggleMenu ? "h-0" : "h-[21%]"
         }`}
       >
         <div className="px-9">
@@ -87,10 +87,18 @@ function App() {
             >
               Quienes Somos
             </Link>
-            <Link className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold">
+            <Link
+              to=""
+              onClick={() => setToggleMenu(false)}
+              className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold"
+            >
               Productos
             </Link>
-            <Link className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold">
+            <Link
+              to="/login"
+              onClick={() => setToggleMenu(false)}
+              className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold"
+            >
               Iniciar Sesion
             </Link>
           </div>
