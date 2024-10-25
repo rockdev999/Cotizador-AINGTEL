@@ -73,7 +73,11 @@ function App() {
       >
         <div className="px-9">
           <div className="flex flex-col gap-1">
-            <Link className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold">
+            <Link
+              to="/"
+              onClick={() => setToggleMenu(false)}
+              className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold"
+            >
               Inicio
             </Link>
             <Link
