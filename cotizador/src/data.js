@@ -95,3 +95,14 @@ export const users = [
     password: "mySecret789",
   },
 ];
+
+export const categories = [
+  { id: 1, name: "Categoría" },
+  { id: 2, name: "Videovigilancia" },
+  { id: 3, name: "Redes y Comunicaciones" },
+  { id: 4, name: "Seguridad Electrónica" },
+  { id: 5, name: "Sistemas Domóticos" },
+  { id: 6, name: "Sistemas para Energía y Respaldo" },
+  { id: 7, name: "Biométricos" },
+  { id: 8, name: "Sistemas Eléctricos" },
+];
