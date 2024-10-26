@@ -3,8 +3,24 @@ import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import { users } from "../data.js";
 // sm:bg-red-500 md:bg-orange-500 lg:bg-pink-500 xl:bg-blue-500 2xl:bg-sky-500
 function Login() {
-  console.log(users);
+  const [username, setUserName] = useState("");
+  const [pass, setPass] = useState("");
   const [view, setView] = useState(false);
+  const [userLog, setUserLog] = useState(null);
+
+  const verify = () => {
+    if (username === "" || pass === "") return alert("Llene todos los campos");
+    const found = users.find((user) => {
+      return user.email === username && user.password === pass;
+    });
+    if (found) {
+      setUserLog(found);
+      console.log(userLog);
+    } else {
+      console.log("no encontrado");
+    }
+  };
+
   return (
     <div className=" sm:w-full h-[70vh] sm:h-[77vh] flex items-center justify-center">
       <div className="w-full h-full sm:w-[50%] md:w-[42%] lg:w-[35%] xl:w-[30%] 2xl:w-[25%] sm:p-3 sm:border-solid  sm:border-current sm:rounded-md sm:shadow-[0px_-1px_5px_1px_rgba(0,0,0,0.5)] flex flex-col items-center sm:h-[75%]">
@@ -20,6 +36,9 @@ function Login() {
               className="w-full m-1 mr-2 text-lg placeholder:text-lg focus:outline-none bg-inherit"
               type="text"
               placeholder="Usuario"
+              onChange={(event) => {
+                setUserName(event.target.value);
+              }}
             />
             <FaUser />
           </div>
@@ -28,6 +47,9 @@ function Login() {
               className="w-full m-1 mr-2 text-lg placeholder:text-lg focus:outline-none bg-inherit"
               type={view ? "text" : "password"}
               placeholder="Contraseña"
+              onChange={(event) => {
+                setPass(event.target.value);
+              }}
             />
             <div
               onClick={() => {
@@ -42,7 +64,12 @@ function Login() {
             </div>
           </div>
         </div>
-        <button className="my-3 py-4 px-20 bg-[#08b4c4] border rounded-full font-bold text-white active:bg-[#057a82]">
+        <button
+          className="my-3 py-4 px-20 bg-[#08b4c4] border rounded-full font-bold text-white active:bg-[#057a82]"
+          onClick={() => {
+            verify();
+          }}
+        >
           Ingresar
         </button>
       </div>

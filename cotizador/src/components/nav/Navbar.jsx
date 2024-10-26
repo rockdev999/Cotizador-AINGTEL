@@ -47,7 +47,7 @@ function App() {
               <div>
                 <Link
                   to="/login"
-                  className="bg-blue-500 p-2 border-solid rounded-lg hover:bg-[#08b4c4]"
+                  className=" p-2 border-solid rounded-lg bg-[#08b4c4] active:bg-[#057a82]"
                 >
                   Iniciar Sesion
                 </Link>
