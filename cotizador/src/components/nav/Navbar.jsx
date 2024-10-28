@@ -1,9 +1,23 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AdminAuthenticationContext } from "../../contexts/AdminAuthentication";
+import Login from "../../pages/Login";
 // actualizado
 function App() {
   const [toggleMenu, setToggleMenu] = useState(false);
   // sm:bg-red-500 md:bg-orange-500 lg:bg-pink-500 xl:bg-blue-500 2xl:bg-sky-500
+  const navigate = useNavigate();
+  const { adminAuth, setAdminAuth } = useContext(AdminAuthenticationContext);
+  useEffect(function () {
+    if (!adminAuth) {
+      navigate("/login");
+    }
+  }, []);
+  const logout = () => {
+    setAdminAuth(false);
+    navigate("/login");
+  };
   return (
     <nav className="w-full bg-neutral-200">
       <div className="mx-auto w-full">
@@ -45,12 +59,21 @@ function App() {
                 </div>
               </div>
               <div>
-                <Link
-                  to="/login"
-                  className=" p-2 border-solid rounded-lg bg-[#08b4c4] active:bg-[#057a82]"
-                >
-                  Iniciar Sesion
-                </Link>
+                {adminAuth ? (
+                  <Link
+                    onClick={logout}
+                    className=" p-2 border-solid rounded-lg bg-red-400 active:bg-[#057a82]"
+                  >
+                    Cerrar Sesion
+                  </Link>
+                ) : (
+                  <Link
+                    to="/login"
+                    className=" p-2 border-solid rounded-lg bg-[#08b4c4] active:bg-[#057a82]"
+                  >
+                    Iniciar Sesion
+                  </Link>
+                )}
               </div>
             </div>
           </div>
@@ -88,19 +111,31 @@ function App() {
               Quienes Somos
             </Link>
             <Link
-              to=""
+              to="/products"
               onClick={() => setToggleMenu(false)}
               className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold"
             >
               Productos
             </Link>
-            <Link
-              to="/login"
-              onClick={() => setToggleMenu(false)}
-              className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold"
-            >
-              Iniciar Sesion
-            </Link>
+            {adminAuth ? (
+              <Link
+                onClick={() => {
+                  setToggleMenu(false);
+                  logout();
+                }}
+                className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold bg-red-400 active:bg-[#057a82]"
+              >
+                Cerrar Sesion
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setToggleMenu(false)}
+                className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold bg-[#08b4c4] active:bg-[#057a82]"
+              >
+                Iniciar Sesion
+              </Link>
+            )}
           </div>
         </div>
       </div>

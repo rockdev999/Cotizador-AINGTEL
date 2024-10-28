@@ -43,7 +43,7 @@ export const products = [
     cost: 18,
     price: 25,
     image: "product-2.jpeg",
-    code: "abc123",
+    code: "abc1234",
     category: 2,
     desciption: "aqui esta la descripcion del producto",
   },
@@ -53,7 +53,7 @@ export const products = [
     cost: 18,
     price: 25,
     image: "product-3.jpeg",
-    code: "abc123",
+    code: "abc1235",
     category: 2,
     desciption: "aqui esta la descripcion del producto",
   },
@@ -63,7 +63,7 @@ export const products = [
     cost: 18,
     price: 25,
     image: "product-4.jpeg",
-    code: "abc123",
+    code: "abc1236",
     category: 2,
     desciption: "aqui esta la descripcion del producto",
   },
@@ -73,7 +73,7 @@ export const products = [
     cost: 18,
     price: 25,
     image: "product-5.jpeg",
-    code: "abc123",
+    code: "abc1237",
     category: 2,
     desciption: "aqui esta la descripcion del producto",
   },
@@ -83,16 +83,19 @@ export const users = [
   {
     email: "juan.perez@example.com",
     password: "password123",
+    rol: "admin",
   },
 
   {
     email: "maria.garcia@example.com",
     password: "securePass456",
+    rol: "dealer",
   },
 
   {
     email: "carlos.lopez@example.com",
     password: "mySecret789",
+    rol: "dealer",
   },
 ];
 
