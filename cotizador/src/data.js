@@ -34,7 +34,7 @@ export const products = [
     price: 25,
     image: "product-1.jpeg",
     code: "abc123",
-    category: 2,
+    category: 1,
     desciption: "aqui esta la descripcion del producto",
   },
   {
@@ -54,7 +54,7 @@ export const products = [
     price: 25,
     image: "product-3.jpeg",
     code: "abc1235",
-    category: 2,
+    category: 3,
     desciption: "aqui esta la descripcion del producto",
   },
   {
@@ -64,7 +64,7 @@ export const products = [
     price: 25,
     image: "product-4.jpeg",
     code: "abc1236",
-    category: 2,
+    category: 4,
     desciption: "aqui esta la descripcion del producto",
   },
   {
@@ -74,11 +74,11 @@ export const products = [
     price: 25,
     image: "product-5.jpeg",
     code: "abc1237",
-    category: 2,
+    category: 5,
     desciption: "aqui esta la descripcion del producto",
   },
 ];
-
+//actualizado
 export const users = [
   {
     email: "juan.perez@example.com",
