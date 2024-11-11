@@ -3,11 +3,11 @@ import multer from "multer";
 import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
-
 export const getProducts = async (req, res) => {
   try {
     const [rows] = await connection.query("SELECT * FROM Product");
     console.log(rows);
+
     res.status(200).json(rows);
   } catch (error) {
     console.log(error);
@@ -26,9 +26,9 @@ export const getProducts = async (req, res) => {
 // });
 
 // export const upload = multer({ storage: storage });
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const disk = multer.diskStorage({
   destination: path.join(__dirname, "../../uploads"),
   filename: (req, file, cb) => {
@@ -79,7 +79,7 @@ export const getProduct = async (req, res) => {
     const { code } = req.params;
     const [result] = await connection.query(
       "SELECT * FROM Product WHERE code = ?",
-      [ci]
+      [code]
     );
     if (result.affectedRows && result.affectedRows === 0) {
       res.status(404).json(messagge);
@@ -93,8 +93,14 @@ export const getProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { code } = req.params;
+    if (!code) {
+      return res
+        .status(400)
+        .json({ message: "El código del producto es requerido" });
+    }
     const [result] = await connection.query(
-      `DELETE FROM Product WHERE code = ${code}`
+      "DELETE FROM Product WHERE code = ?",
+      [code]
     );
     if (result.affectedRows && result.affectedRows > 0) {
       res.status(202).json({ messagge: "usuario eliminado" });
