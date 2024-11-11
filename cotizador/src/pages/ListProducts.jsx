@@ -3,21 +3,34 @@ import { categories } from "../data";
 import { AdminAuthenticationContext } from "../contexts/AdminAuthentication";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import axios from "axios";
 function ListProducts() {
+  const [products, setProducts] = useState([]);
   const [xcode, setXcode] = useState("");
   const [act, setAct] = useState(false);
   const [found, setFound] = useState([]);
   const navigate = useNavigate();
   const { adminAuth, setAdminAuth } = useContext(AdminAuthenticationContext);
+  const getProducts = () => {
+    axios
+      .get("http://localhost:3000/products")
+      .then((result) => {
+        setProducts(result.data);
+        console.log(result.data);
+      })
+      .catch((error) => console.log(error));
+  };
   useEffect(
     function () {
-      if (!adminAuth) {
+      if (adminAuth) {
+        getProducts();
+      } else {
         navigate("/login");
       }
     },
     [adminAuth]
   );
-  // console.log(products);
+  console.log(products);
   const cate = (product) => {
     const categoryFound = categories.find(
       (category) => category.id === product.category
@@ -36,7 +49,14 @@ function ListProducts() {
       alert("Producto no encontrado");
     }
   };
-
+  const eliminar = (code) => {
+    axios
+      .delete(`http://localhost:3000/products/${code}`)
+      .then((result) => {
+        getProducts();
+      })
+      .catch((error) => console.log(error));
+  };
   return (
     <>
       <div className="w-full flex justify-center items-center py-5 flex-col gap-2">
@@ -75,11 +95,14 @@ function ListProducts() {
         {!act ? (
           products.map((product) => (
             <div
-              key={product.id}
+              key={product.code}
               className="w-full p-3 border-solid h-[100%] border-black rounded-md md:w-[80%] shadow-[1px_-1px_10px_1px_rgba(0,0,0,0.5)] flex gap-2 items-center"
             >
               <div className="w-2/5">
-                <img src={product.image} alt="" />
+                <img
+                  src={`http://localhost:3000/uploads/${product.image}`}
+                  alt=""
+                />
               </div>
               <div className="flex flex-col">
                 <p>
@@ -106,10 +129,15 @@ function ListProducts() {
                 </p>
                 <p>
                   <strong>Descripcion: </strong>
-                  {product.desciption}
+                  {product.description}
                 </p>
                 <div className="w-full flex justify-end">
-                  <button className="w-[50%] p-3 rounded-md bg-red-500 active:bg-red-700">
+                  <button
+                    className="w-[50%] p-3 rounded-md bg-red-500 active:bg-red-700"
+                    onClick={() => {
+                      eliminar(product.code);
+                    }}
+                  >
                     Eliminar
                   </button>
                 </div>
@@ -149,7 +177,13 @@ function ListProducts() {
                 {found.desciption}
               </p>
               <div className="w-full flex justify-end">
-                <button className="w-[50%] p-3 rounded-md bg-red-500 active:bg-red-700">
+                <button
+                  className="w-[50%] p-3 rounded-md bg-red-500 active:bg-red-700"
+                  onClick={() => {
+                    eliminar(found.code);
+                    setAct(false);
+                  }}
+                >
                   Eliminar
                 </button>
               </div>
