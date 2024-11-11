@@ -2,21 +2,21 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UseForm from "../components/addproducts/UseForm";
 import { AdminAuthenticationContext } from "../contexts/AdminAuthentication";
+import axios from "axios";
 // actualizado
 function AddProducts() {
+  const [code, setCode] = useState("");
+  const [name, setName] = useState("");
+  const [cost, setCost] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [category, setCategory] = useState(0);
+  const [description, setDescription] = useState("");
   const [modal, setModal] = useState(false);
   const [correct, setCorrect] = useState(false);
-  const { form, dataForm } = UseForm({
-    name: "",
-    cost: 0,
-    price: 0,
-    image: null,
-    code: "",
-    category: "",
-    description: "",
-  });
-  const navigate = useNavigate();
   const { adminAuth, setAdminAuth } = useContext(AdminAuthenticationContext);
+  const [imageFile, setImageFile] = useState(null);
+
+  const navigate = useNavigate();
   useEffect(
     function () {
       if (!adminAuth) {
@@ -25,16 +25,19 @@ function AddProducts() {
     },
     [adminAuth]
   );
-  const sendProduct = () => {
-    const { name, cost, price, image, code, category, description } = form;
+  const update = (event) => {
+    const file = event.target.files[0];
+    setImageFile(file);
+  };
+  const sendProduct = async () => {
     if (
       name === "" ||
       cost === 0 ||
       price === 0 ||
-      image === null ||
       code === "" ||
-      category === "" ||
-      description === ""
+      category === 0 ||
+      description === "" ||
+      !imageFile
     ) {
       setModal(true);
       setCorrect(false);
@@ -42,13 +45,38 @@ function AddProducts() {
     } else {
       setModal(true);
       setCorrect(true);
-      console.log(form);
+      // console.log(form);
+      console.log("todo");
+
+      const formData = new FormData();
+      formData.append("code", code);
+      formData.append("name", name);
+      formData.append("cost", cost);
+      formData.append("price", price);
+      formData.append("category", category);
+      formData.append("description", description);
+      formData.append("image", imageFile);
+      // console.log("imageFile");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+      try {
+        await axios.post("http://localhost:3000/products", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log("Producto enviado");
+      } catch (error) {
+        console.error("Error al enviar el producto:", error);
+      }
       setTimeout(() => {
         setModal(false);
       }, 2000);
       // resetForm();
     }
   };
+
   return (
     <div className="w-full flex flex-col items-center">
       <p className="pt-4 border-b-4 border-[#08b4c4] text-lg font-medium">
@@ -60,7 +88,9 @@ function AddProducts() {
           type="text"
           placeholder="Nombre Producto"
           name="name"
-          onChange={dataForm}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
         />
         <div className="flex flex-row justify-center gap-4">
           <input
@@ -69,7 +99,9 @@ function AddProducts() {
             placeholder="Costo"
             step="0.01"
             name="cost"
-            onChange={dataForm}
+            onChange={(e) => {
+              setCost(e.target.value);
+            }}
           />
           <input
             className="w-2/5 p-4 border-solid border-2 border-gray-400 rounded-lg placeholder:text-lg text-lg placeholder:text-gray-700"
@@ -77,7 +109,9 @@ function AddProducts() {
             placeholder="Precio"
             step="0.01"
             name="price"
-            onChange={dataForm}
+            onChange={(e) => {
+              setPrice(e.target.value);
+            }}
           />
         </div>
         <div className="w-[95%] flex flex-col">
@@ -85,7 +119,8 @@ function AddProducts() {
             className=" file:bg-[#08b4c4] file:py-4 file:px-3 file:border file:border-0 file:rounded-lg file:active:bg-[#057a82] file:cursor-pointer"
             type="file"
             name="image"
-            onChange={dataForm}
+            accept="image/png, image/jpeg, image/jpg"
+            onChange={update}
           />
           <p className="px-1 text-sm text-gray-500 dark:text-gray-500">
             PNG, JPG o JPEG.
@@ -96,13 +131,17 @@ function AddProducts() {
           type="text"
           placeholder="Codigo"
           name="code"
-          onChange={dataForm}
+          onChange={(e) => {
+            setCode(e.target.value);
+          }}
         />
         <div className="mx-4 w-full border-solid border-2 border-gray-400 rounded-lg placeholder:text-lg text-lg">
           <select
             className="w-[95%] bg-transparent p-4 outline-none focus:ring-0 text-gray-700"
             name="category"
-            onChange={dataForm}
+            onChange={(e) => {
+              setCategory(e.target.value);
+            }}
           >
             <option value="0">Categoría</option>
             <option value="1">Videovigilancia</option>
@@ -117,7 +156,9 @@ function AddProducts() {
         <textarea
           className="w-full h-[200px] p-4 border-solid border-2 border-gray-400 rounded-lg placeholder:text-lg text-lg placeholder:text-gray-700 resize-none"
           name="description"
-          onChange={dataForm}
+          onChange={(e) => {
+            setDescription(e.target.value);
+          }}
           placeholder="Descripcion"
         ></textarea>
       </div>

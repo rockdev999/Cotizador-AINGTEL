@@ -1,19 +1,31 @@
-import { dealers } from "../data";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AdminAuthenticationContext } from "../contexts/AdminAuthentication";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
 // actualizado
 function ListDealers() {
+  const [dealers, setDealers] = useState([]);
   const [xuser, setXuser] = useState("");
   const [act, setAct] = useState(false);
   const [found, setFound] = useState([]);
   const navigate = useNavigate();
   const { adminAuth, setAdminAuth } = useContext(AdminAuthenticationContext);
   const [view, setView] = useState(false);
+  const getDealers = () => {
+    axios
+      .get("http://localhost:3000/dealers")
+      .then((result) => {
+        setDealers(result.data);
+        console.log(dealers);
+      })
+      .catch((error) => console.log(error));
+  };
   useEffect(
     function () {
-      if (!adminAuth) {
+      if (adminAuth) {
+        getDealers();
+      } else {
         navigate("/login");
       }
     },
@@ -21,7 +33,7 @@ function ListDealers() {
   );
   // console.log(dealers);
   const filter = (param) => {
-    const userFound = dealers.find((dealer) => dealer.email === param);
+    const userFound = dealers.find((dealer) => dealer.ci === parseInt(param));
     if (userFound) {
       // console.log("Producto encontrado:", userFound);
       setAct(true);
@@ -29,7 +41,17 @@ function ListDealers() {
       return userFound;
     } else {
       alert("Vendedor no encontrado");
+      console.log(typeof param);
     }
+  };
+
+  const eliminar = (ci) => {
+    axios
+      .delete(`http://localhost:3000/dealers/${ci}`)
+      .then((result) => {
+        getDealers();
+      })
+      .catch((error) => console.log(error));
   };
   return (
     <>
@@ -38,8 +60,8 @@ function ListDealers() {
           <input
             id="search"
             className="w-[90%] focus:outline-none bg-inherit px-2"
-            type="text"
-            placeholder="Introduzca codigo"
+            type="number"
+            placeholder="Introduzca CI"
             onChange={(e) => {
               setXuser(e.target.value);
             }}
@@ -123,7 +145,12 @@ function ListDealers() {
             </div> */}
               </div>
               <div className="w-full flex justify-evenly">
-                <button className="p-3 rounded-md bg-red-500 active:bg-red-700">
+                <button
+                  className="p-3 rounded-md bg-red-500 active:bg-red-700"
+                  onClick={() => {
+                    eliminar(dealer.ci);
+                  }}
+                >
                   Eliminar
                 </button>
               </div>
@@ -181,7 +208,13 @@ function ListDealers() {
             </div> */}
             </div>
             <div className="w-full flex justify-evenly">
-              <button className="p-3 rounded-md bg-red-500 active:bg-red-700">
+              <button
+                className="p-3 rounded-md bg-red-500 active:bg-red-700"
+                onClick={() => {
+                  eliminar(found.ci);
+                  setAct(false);
+                }}
+              >
                 Eliminar
               </button>
             </div>

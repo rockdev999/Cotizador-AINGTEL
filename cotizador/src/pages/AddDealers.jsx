@@ -2,6 +2,7 @@ import { React, useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UseForm from "../components/addproducts/UseForm";
 import { AdminAuthenticationContext } from "../contexts/AdminAuthentication";
+import axios from "axios";
 function AddDealers() {
   const [modal, setModal] = useState(false);
   const [correct, setCorrect] = useState(false);
@@ -28,10 +29,17 @@ function AddDealers() {
       setCorrect(false);
       return;
     } else {
-      setModal(true);
-      setCorrect(true);
       // setDealer(form);
-      console.log(form);
+      axios
+        .post("http://localhost:3000/dealers", form)
+        .then(() => {
+          setModal(true);
+          setCorrect(true);
+        })
+        .catch((error) => {
+          setModal(true);
+          setCorrect(false);
+        });
       setTimeout(() => {
         setModal(false);
       }, 2000);

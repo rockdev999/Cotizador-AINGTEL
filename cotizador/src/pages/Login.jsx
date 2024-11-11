@@ -1,11 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
-import { users } from "../data.js";
+
 import { useNavigate } from "react-router-dom";
 import { AdminAuthenticationContext } from "../contexts/AdminAuthentication.jsx";
 import { DealerAuthenticationContext } from "../contexts/DealerAuthentication.jsx";
+import axios from "axios";
 // sm:bg-red-500 md:bg-orange-500 lg:bg-pink-500 xl:bg-blue-500 2xl:bg-sky-500
 function Login() {
+  const [users, setUsers] = useState([]);
+
   const [username, setUserName] = useState("");
   const [pass, setPass] = useState("");
   const [view, setView] = useState(false);
@@ -24,19 +27,24 @@ function Login() {
       return;
     }
     const found = users.find((user) => {
-      return user.email === username && user.password === pass;
+      return user.username === username && user.password === pass;
     });
-    if (found.rol === "admin") {
-      setUserAdmin(found);
-      setAdminAuth(true);
-      // console.log(userAdmin);
-    } else {
-      if (found.rol === "dealer") {
-        setUserDealer(found);
-        setDealerAuth(true);
+    // console.log(found);
+    if (found) {
+      if (found.rol === "admin") {
+        setUserAdmin(found);
+        setAdminAuth(true);
+        // console.log(userAdmin);
       } else {
-        alert("Usuario o Contraseña incorrectos");
+        if (found.rol === "dealer") {
+          setUserDealer(found);
+          setDealerAuth(true);
+        } else {
+          alert("Usuario o Contraseña incorrectos");
+        }
       }
+    } else {
+      alert("Usuario o Contraseña incorrectos");
     }
   };
   useEffect(
@@ -65,7 +73,19 @@ function Login() {
       navigate("/Quoter");
     }
   }, [userDealer]);
-
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/users")
+      .then((result) => {
+        setUsers(result.data);
+        console.log(users);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+  // useEffect(() => {
+  //   console.log("Usuarios cargados o actualizados:", users);
+  //   // Puedes realizar acciones adicionales cuando los usuarios cambien
+  // }, [users]);
   return (
     <div className=" sm:w-full h-[70vh] sm:h-[77vh] flex items-center justify-center">
       <div className="w-full h-full sm:w-[50%] md:w-[42%] lg:w-[35%] xl:w-[30%] 2xl:w-[25%] sm:p-3 sm:border-solid  sm:border-current sm:rounded-md sm:shadow-[0px_-1px_5px_1px_rgba(0,0,0,0.5)] flex flex-col items-center sm:h-[75%]">

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AdminAuthenticationContext } from "../../contexts/AdminAuthentication";
 import Login from "../../pages/Login";
+import { products } from "../../data";
 // actualizado
 function App() {
   const [toggleMenu, setToggleMenu] = useState(false);
@@ -53,7 +54,10 @@ function App() {
                   </Link>
                 </div>
                 <div>
-                  <Link className="py-2 px-3 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold">
+                  <Link
+                    to={"/products"}
+                    className="py-2 px-3 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold"
+                  >
                     Productos
                   </Link>
                 </div>
