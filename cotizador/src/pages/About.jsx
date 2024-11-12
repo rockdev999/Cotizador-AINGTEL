@@ -1,8 +1,8 @@
 // actualizado
 function About() {
   return (
-    <div className="flex flex-col p-4 gap-4">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-center xl:mx-20">
+    <div className="flex  flex-col p-4 gap-4">
+      <div className="flex mt-14 flex-col gap-5 lg:flex-row lg:items-center xl:mx-20">
         <div className="flex flex-col justify-center shadow-[10px_13px_15px_-10px_rgba(0,0,0,0.5)] lg:h-[223px] xl:h-[200px]">
           <div className="bg-[#04b4c4] text-2xl p-2 w-full text-start sm:text-lg md:text-xl">
             <strong>MISIÓN</strong>

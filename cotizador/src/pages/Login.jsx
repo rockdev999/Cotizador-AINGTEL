@@ -88,7 +88,7 @@ function Login() {
   // }, [users]);
   return (
     <div className=" sm:w-full h-[70vh] sm:h-[77vh] flex items-center justify-center">
-      <div className="w-full h-full sm:w-[50%] md:w-[42%] lg:w-[35%] xl:w-[30%] 2xl:w-[25%] sm:p-3 sm:border-solid  sm:border-current sm:rounded-md sm:shadow-[0px_-1px_5px_1px_rgba(0,0,0,0.5)] flex flex-col items-center sm:h-[75%]">
+      <div className="w-full mt-14 h-full sm:w-[50%] md:w-[42%] lg:w-[35%] xl:w-[30%] 2xl:w-[25%] sm:p-3 sm:border-solid  sm:border-current sm:rounded-md sm:shadow-[0px_-1px_5px_1px_rgba(0,0,0,0.5)] flex flex-col items-center sm:h-[75%]">
         <div className="flex flex-col items-center py-9 gap-4 sm:py-2">
           <div className="w-28">
             <img className="w-full h-full" src="about.png" alt="" />

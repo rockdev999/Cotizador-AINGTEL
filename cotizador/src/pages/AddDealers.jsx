@@ -57,7 +57,7 @@ function AddDealers() {
     [adminAuth]
   );
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full pt-14 flex flex-col items-center">
       <p className="pt-4 border-b-4 border-[#08b4c4] text-lg font-medium">
         AGREGAR VENDEDOR
       </p>

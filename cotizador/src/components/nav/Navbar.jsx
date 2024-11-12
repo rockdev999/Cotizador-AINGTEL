@@ -20,7 +20,7 @@ function App() {
     navigate("/login");
   };
   return (
-    <nav className="w-full bg-neutral-200">
+    <nav className="fixed w-full bg-neutral-200">
       <div className="mx-auto w-full">
         <div className="w-full flex mx-auto justify-between">
           {/* Primary menu and logo */}
@@ -36,7 +36,7 @@ function App() {
             </div>
             {/* primary */}
             <div className="hidden lg:flex gap-8 w-[70%] flex justify-between">
-              <div className="flex gap-24">
+              <div className="flex gap-24 lg:gap-10">
                 <div>
                   <Link
                     to="/"
@@ -64,12 +64,20 @@ function App() {
               </div>
               <div>
                 {adminAuth ? (
-                  <Link
-                    onClick={logout}
-                    className=" p-2 border-solid rounded-lg bg-red-400 active:bg-[#057a82]"
-                  >
-                    Cerrar Sesion
-                  </Link>
+                  <>
+                    <Link
+                      to="/home-admin"
+                      className="py-2 px-3 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold lg:w-[12px]"
+                    >
+                      Administrador
+                    </Link>
+                    <Link
+                      onClick={logout}
+                      className=" p-2 border-solid rounded-lg bg-red-400 active:bg-[#057a82]"
+                    >
+                      Cerrar Sesion
+                    </Link>
+                  </>
                 ) : (
                   <Link
                     to="/login"
@@ -95,7 +103,7 @@ function App() {
       {/* mobile navigation */}
       <div
         className={`fixed z-40 w-full bg-gray-100 overflow-hidden flex flex-col lg:hidden gap-2  origin-top duration-500 ${
-          !toggleMenu ? "h-0" : "h-[21%]"
+          !toggleMenu ? "h-0" : "h-[25%]"
         }`}
       >
         <div className="px-9">
@@ -121,6 +129,17 @@ function App() {
             >
               Productos
             </Link>
+            {adminAuth ? (
+              <Link
+                to="/home-admin"
+                onClick={() => setToggleMenu(false)}
+                className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold"
+              >
+                Administrador
+              </Link>
+            ) : (
+              <></>
+            )}
             {adminAuth ? (
               <Link
                 onClick={() => {

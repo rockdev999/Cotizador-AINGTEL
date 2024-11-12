@@ -58,7 +58,7 @@ function ListProducts() {
       .catch((error) => console.log(error));
   };
   return (
-    <>
+    <div className="pt-14">
       <div className="w-full flex justify-center items-center py-5 flex-col gap-2">
         <div className="w-[70%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w[25%] flex border border-2 rounded-md p-2">
           <input
@@ -99,12 +99,9 @@ function ListProducts() {
               className="w-full p-3 border-solid h-[100%] border-black rounded-md md:w-[80%] shadow-[1px_-1px_10px_1px_rgba(0,0,0,0.5)] flex gap-2 items-center"
             >
               <div className="w-2/5">
-                <img
-                  src={`http://localhost:3000/uploads/${product.image}`}
-                  alt=""
-                />
+                <img src={product.image} alt="" />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col w-[55%]">
                 <p>
                   <strong>Nombre: </strong>
                   {product.name}
@@ -145,7 +142,7 @@ function ListProducts() {
             </div>
           ))
         ) : (
-          <div className="w-full p-3 border-solid h-[100%] border-black rounded-md md:w-[80%] shadow-[1px_-1px_10px_1px_rgba(0,0,0,0.5)] flex gap-2 items-center sm:bg-red-500 md:bg-orange-500 lg:bg-pink-500 xl:bg-blue-500 2xl:bg-sky-500">
+          <div className="w-full p-3 border-solid h-[100%] border-black rounded-md md:w-[80%] shadow-[1px_-1px_10px_1px_rgba(0,0,0,0.5)] flex gap-2 items-center">
             <div className="w-2/5">
               <img src={found.image} alt="" />
             </div>
@@ -191,7 +188,7 @@ function ListProducts() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
 // actualizado

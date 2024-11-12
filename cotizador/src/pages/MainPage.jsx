@@ -3,7 +3,7 @@ import React from "react";
 function MainPage() {
   return (
     <div className="flex flex-col items-center p-4 gap-4">
-      <div className="flex justify-center lg:w-[95%] lg:flex lg:justify-start">
+      <div className="flex mt-14 justify-center lg:w-[95%] lg:flex lg:justify-start">
         <div className="w-full flex flex-col border-black rounded-md shadow-[1px_-1px_10px_1px_rgba(0,0,0,0.5)] md:flex-row md:items-center md:w-[90%] lg:w-[80%] mt-5">
           <div className="w-full p-4 md:h-[90%]">
             <img

@@ -54,7 +54,7 @@ function ListDealers() {
       .catch((error) => console.log(error));
   };
   return (
-    <>
+    <div className="pt-14">
       <div className="w-full flex justify-center items-center py-5 flex-col gap-2">
         <div className="w-[70%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w[25%] flex border border-2 rounded-md p-2">
           <input
@@ -221,7 +221,7 @@ function ListDealers() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
 

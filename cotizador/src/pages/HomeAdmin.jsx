@@ -28,7 +28,7 @@ function HomeAdmin() {
   );
   return (
     <div className="flex flex-col items-center justify-center h-[70vh] sm:h-[77vh]">
-      <div className="flex flex-row items-center justify-center w-full h-[40%] gap-5 lg:gap-28 xl:gap-32">
+      <div className="flex mt-14 flex-row items-center justify-center w-full h-[40%] gap-5 lg:gap-28 xl:gap-32">
         <div
           className="w-[43%] h-[190px] lg:w-[38%] xl:w-[34%] 2xl:w-[30%] flex flex-col items-center p-2 border rounded-md bg-[#08b4c4] active:bg-[#057a82] cursor-pointer"
           onClick={addProduct}
