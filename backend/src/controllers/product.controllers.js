@@ -3,15 +3,46 @@ import multer from "multer";
 import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
+// export const getProducts = async (req, res) => {
+//   try {
+//     const [rows] = await connection.query("SELECT * FROM Product");
+//     console.log(rows);
+
+//     res.status(200).json(rows);
+//   } catch (error) {
+//     console.log(error);
+//     res.send(500).status(500);
+//   }
+// };
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const disk = multer.diskStorage({
+  destination: path.join(__dirname, "../../uploads"),
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+export const fileUpload = multer({
+  storage: disk,
+  limits: { fileSize: 5 * 1024 * 1024 },
+}).single("image");
 export const getProducts = async (req, res) => {
   try {
     const [rows] = await connection.query("SELECT * FROM Product");
-    console.log(rows);
 
-    res.status(200).json(rows);
+    // Añadir la URL completa de la imagen al objeto de cada producto
+    const productsWithImages = rows.map((product) => {
+      return {
+        ...product,
+        image: `http://localhost:3000/uploads/${product.image}`, // Cambia la URL base según tu entorno
+      };
+    });
+
+    res.status(200).json(productsWithImages);
   } catch (error) {
     console.log(error);
-    res.send(500).status(500);
+    res.status(500).json({ message: "Error al obtener los productos", error });
   }
 };
 
@@ -26,20 +57,6 @@ export const getProducts = async (req, res) => {
 // });
 
 // export const upload = multer({ storage: storage });
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const disk = multer.diskStorage({
-  destination: path.join(__dirname, "../../uploads"),
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-export const fileUpload = multer({
-  storage: disk,
-  limits: { fileSize: 5 * 1024 * 1024 },
-}).single("image");
 
 export const createProduct = async (req, res) => {
   try {
