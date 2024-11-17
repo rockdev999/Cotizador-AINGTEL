@@ -39,20 +39,24 @@ export const createDealer = async (req, res) => {
 
 export const getDealer = async (req, res) => {
   try {
-    const { ci } = req.params;
+    const { email } = req.params;
     const [result] = await connection.query(
-      "SELECT * FROM Dealer WHERE ci = ?",
-      [ci]
+      "SELECT * FROM Dealer WHERE email = ?",
+      [email]
     );
-    if (result.affectedRows && result.affectedRows === 0) {
-      res.status(404).json(messagge);
+
+    // Verificar si se encontró el usuario
+    if (result.length === 0) {
+      res.status(404).json({ message: "Usuario no encontrado" });
     } else {
-      res.status(200).json(result.rows[0]);
+      res.status(200).json(result[0]); // Enviar el primer resultado encontrado
     }
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ message: "Error interno del servidor" });
+    console.error(error);
   }
 };
+
 export const deleteDealer = async (req, res) => {
   try {
     const { ci } = req.params;
@@ -65,6 +69,7 @@ export const deleteDealer = async (req, res) => {
       res.status(404).json(messagge);
     }
   } catch (error) {
+    res.status(500).json({ message: "Error interno del servidor" });
     console.log(error);
   }
 };

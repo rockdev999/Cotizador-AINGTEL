@@ -9,5 +9,5 @@ export const dealerRoute = Router();
 
 dealerRoute.get("/dealers", getDealers);
 dealerRoute.post("/dealers", createDealer);
-dealerRoute.get("/dealers/:ci", getDealer);
+dealerRoute.get("/dealers/:email", getDealer);
 dealerRoute.delete("/dealers/:ci", deleteDealer);
