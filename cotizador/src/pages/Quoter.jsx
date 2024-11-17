@@ -6,6 +6,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import html2canvas from "html2canvas";
 import { useNavigate } from "react-router-dom";
+import { numeroALetras } from "../components/NumeralALiteral/NumeralAliteral.js";
 
 const Quoter = () => {
   const { dealerAuth } = useContext(DealerAuthenticationContext);
@@ -28,6 +29,21 @@ const Quoter = () => {
     telefono: "",
     direccion: "",
   });
+  const [item, setItem] = useState(-1);
+  useEffect(() => {
+    // Configurar el intervalo para hacer la solicitud cada 5 segundos (5000ms)
+    const intervalId = setInterval(() => {
+      axios
+        .get("http://localhost:3000/quotations")
+        .then((result) => {
+          setItem(result.data.count); // Actualizar el estado con el nuevo conteo
+        })
+        .catch((error) => console.log(error));
+    }, 10000); // 5000ms = 5 segundos
+
+    // Limpiar el intervalo cuando el componente se desmonte
+    return () => clearInterval(intervalId);
+  }, []);
   const [user, setUser] = useState(null);
   const [dealer, setDealer] = useState({});
 
@@ -38,7 +54,9 @@ const Quoter = () => {
       setUser(JSON.parse(storedUser));
     }
   }, []);
-
+  useEffect(() => {
+    setPrecioTotal(parseFloat(newInput));
+  }, [newInput]);
   // Verificar que user no sea null antes de acceder a user.username
   useEffect(() => {
     if (user && user.username) {
@@ -126,10 +144,12 @@ const Quoter = () => {
   const handleModificar = () => {
     setModificar(true);
   };
-  const handleAceptar = () => {
-    setPrecioTotal(newInput);
+  const handleAceptar = (input) => {
+    setPrecioTotal(input);
     console.log("Precio modificado newInput: " + newInput);
     console.log("Precio modificado PrecioTotal: " + precioTotal);
+    setPrecioTotal(newInput);
+    console.log("Precio modificado PrecioTotal2: " + precioTotal);
     setModificar(false);
   };
   const handleCliente = () => {
@@ -139,6 +159,7 @@ const Quoter = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
+
     // Título
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
@@ -172,8 +193,9 @@ const Quoter = () => {
     doc.setLineWidth(0.2);
     doc.line(65, 45, pageWidth - 65, 45);
     doc.setFontSize(9);
-    doc.text("Item: nro de item", 65, 50, { align: "left" });
+    doc.text(`Item: ${item + 1}`, 65, 50, { align: "left" });
 
+    // Datos del vendedor
     doc.setFontSize(12);
     doc.text("DATOS DEL VENDEDOR:", pageWidth / 2 - 50, 60, {
       align: "center",
@@ -186,6 +208,8 @@ const Quoter = () => {
     doc.text(`Correo: ${dealer.email}`, pageWidth / 2 - 50, 75, {
       align: "center",
     });
+
+    // Datos del comprador
     doc.setFontSize(12);
     doc.text("DATOS DEL COMPRADOR", pageWidth / 2 + 50, 60, {
       align: "center",
@@ -204,49 +228,98 @@ const Quoter = () => {
       align: "center",
     });
 
-    // Establecer el inicio de la tabla
-    let yOffset = 95;
+    // Agregar encabezado de la tabla de productos
+    let yOffset = 105; // Posición inicial debajo de los datos
+    doc.setFontSize(10);
+    doc.text("Producto", 14, yOffset);
+    doc.text("Cantidad", 50, yOffset);
+    doc.text("Precio Unitario", 80, yOffset);
+    doc.text("Total", 110, yOffset);
 
-    // Tabla de productos
+    // Dibujar la línea debajo del encabezado de la tabla
+    doc.setLineWidth(0.2);
+    doc.line(10, yOffset + 2, pageWidth - 10, yOffset + 4);
+
+    // Incrementar yOffset para la primera fila de productos
+    yOffset += 10;
+
+    // Lista de productos
     for (let i = 0; i < listaProductos.length; i++) {
       const prod = listaProductos[i];
-
-      // Cargar la imagen del producto
       const img = new Image();
       img.src = prod.image;
 
       img.onload = () => {
-        // Agregar cada fila de productos
+        // Renderizar el producto en el PDF
         doc.setFontSize(10);
         doc.text(prod.name, 14, yOffset);
         doc.text(prod.cantidad.toString(), 50, yOffset);
         doc.text(`${prod.price.toFixed(2)} Bs.`, 80, yOffset);
         doc.text(
           `${(prod.price * prod.cantidad).toFixed(2)} Bs.`,
-          130,
+          110,
           yOffset
         );
 
-        // Agregar la imagen al PDF (en una posición ajustada)
-        doc.addImage(img, "PNG", 150, yOffset - 4, 30, 30); // Ajusta las coordenadas y tamaño de la imagen
+        // Agregar la imagen al PDF
+        doc.addImage(img, "PNG", 150, yOffset - 4, 30, 30);
         yOffset += 35; // Espacio entre productos
 
-        // Asegurarse de que el PDF se guarde solo cuando se haya cargado la última imagen
+        // Guardar el PDF cuando se cargue la última imagen
         if (i === listaProductos.length - 1) {
+          // Agregar "PRECIO TOTAL" al final
+          yOffset += 15; // Espacio adicional antes del total
+          doc.setFontSize(12);
+          doc.text("PRECIO TOTAL:", 20, yOffset);
+          doc.text(`${parseFloat(precioTotal).toFixed(2)} Bs.`, 55, yOffset);
+          doc.text(`${numeroALetras(precioTotal)}`, 55, yOffset + 6);
           doc.save("cotizacion.pdf");
         }
       };
 
       img.onerror = (err) => {
         console.error("Error al cargar la imagen", err);
-        // Si ocurre un error al cargar la imagen, puedes seguir con el resto de la tabla
         if (i === listaProductos.length - 1) {
+          // Agregar "PRECIO TOTAL" al final si hubo error
+          yOffset += 15; // Espacio adicional antes del total
+          doc.setFontSize(12);
+          doc.text("PRECIO TOTAL:", 20, yOffset);
+          doc.text(`${precioTotal.toFixed(2)} Bs.`, 55, yOffset);
+          doc.text(`${numeroALetras(precioTotal)}`, 55, yOffset + 6);
+
           doc.save("cotizacion.pdf");
         }
       };
     }
-  };
 
+    // Guardar el documento si no hay imágenes
+    if (listaProductos.length === 0) {
+      // Agregar "PRECIO TOTAL" al final
+      yOffset += 15; // Espacio adicional antes del total
+      doc.setFontSize(12);
+      doc.text("PRECIO TOTAL:", 20, yOffset);
+      doc.text(`${precioTotal.toFixed(2)} Bs.`, 55, yOffset);
+      doc.text(`${numeroALetras(precioTotal)}`, 55, yOffset + 6);
+      doc.save("cotizacion.pdf");
+    }
+  };
+  const sendQuotation = () => {
+    axios
+      .post("http://localhost:3000/quotations", {
+        dealer_email: dealer.email,
+        buyer_name: form.nombre,
+        buyer_phone: form.telefono,
+        buyer_email: form.correo,
+        buyer_address: form.direccion,
+        total_price: precioTotal,
+      })
+      .then(() => {
+        console.log("correct");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const sendCliente = () => {
     const { nombre, correo, telefono, direccion } = form;
     if (nombre === "" || correo === "" || telefono === "" || direccion === "") {
@@ -261,6 +334,7 @@ const Quoter = () => {
       setPrecio(0.0);
       setListaProductos([]);
       setPrecioTotal(0.0);
+      sendQuotation();
       handleGenerarPDF();
     }
   };
@@ -419,11 +493,12 @@ const Quoter = () => {
                   <p>Nuevo Precio:</p>
                   <input
                     type="number"
+                    name="input"
                     onChange={(e) => setNewInput(e.target.value)}
                     className="bg-gray-300 px-2 rounded-sm w-[40%]"
                   />
                   <button
-                    onClick={() => handleAceptar()}
+                    onClick={({ newInput }) => handleAceptar(newInput)}
                     className="px-2 bg-[#08b4c4] border rounded-md text-base text-white active:bg-[#057a82]"
                   >
                     Aceptar

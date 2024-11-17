@@ -45,12 +45,11 @@ function AddProducts() {
       code === "" ||
       category === 0 ||
       description === "" ||
-      !imageFile ||
-      !cost.includes(".") ||
-      !price.includes(".")
+      !imageFile
     ) {
       setModal(true);
       setCorrect(false);
+      console.log("esta aqui");
       return;
     } else {
       setModal(true);
