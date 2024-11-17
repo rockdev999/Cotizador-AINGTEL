@@ -70,6 +70,7 @@ function Login() {
   }, [userAdmin]);
   useEffect(() => {
     if (userDealer) {
+      localStorage.setItem("userDealer", JSON.stringify(userDealer));
       navigate("/quoter");
     }
   }, [userDealer]);

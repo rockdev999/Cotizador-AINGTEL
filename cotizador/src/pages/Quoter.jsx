@@ -28,7 +28,32 @@ const Quoter = () => {
     telefono: "",
     direccion: "",
   });
-  // Simulación de datos (reemplaza esto con una llamada a tu API)
+  const [user, setUser] = useState(null);
+  const [dealer, setDealer] = useState({});
+
+  useEffect(() => {
+    // Obtener los datos del usuario de localStorage
+    const storedUser = localStorage.getItem("userDealer");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  // Verificar que user no sea null antes de acceder a user.username
+  useEffect(() => {
+    if (user && user.username) {
+      const name = user.username;
+
+      axios
+        .get(`http://localhost:3000/dealers/${name}`)
+        .then((result) => {
+          setDealer(result.data);
+          console.log(result.data);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [user]);
+
   useEffect(
     function () {
       if (!dealerAuth) {
@@ -86,7 +111,11 @@ const Quoter = () => {
       };
       setPrecioTotal(precioTotal + precio);
       setListaProductos([...listaProductos, productoConCantidad]);
-      setCantidad(1); // Reiniciar cantidad
+      setCategoriaSeleccionada(0);
+      setProductoSeleccionado(null);
+      document.getElementById("cantidad").value = "";
+      setCantidad(1);
+      setPrecio(0.0); // Reiniciar cantidad
     }
   };
 
@@ -99,110 +128,84 @@ const Quoter = () => {
   };
   const handleAceptar = () => {
     setPrecioTotal(newInput);
+    console.log("Precio modificado newInput: " + newInput);
+    console.log("Precio modificado PrecioTotal: " + precioTotal);
     setModificar(false);
   };
   const handleCliente = () => {
     setModal(true);
   };
-  // const handleGenerarPDF = () => {
-  //   const doc = new jsPDF();
-
-  //   // Título
-  //   doc.setFontSize(18);
-  //   doc.text("Cotización de Productos", 14, 22);
-
-  //   // Información del comprador
-  //   doc.setFontSize(12);
-  //   doc.text(`Cliente: ${form.nombre}`, 14, 30);
-  //   doc.text(`Correo: ${form.correo}`, 14, 36);
-  //   doc.text(`Teléfono: ${form.telefono}`, 14, 42);
-  //   doc.text(`Dirección: ${form.direccion}`, 14, 48);
-
-  //   // Tabla de productos (sin imágenes)
-  //   doc.autoTable({
-  //     startY: 55,
-  //     head: [["Producto", "Cantidad", "Precio Unitario", "Total"]],
-  //     body: listaProductos.map((prod) => [
-  //       prod.name,
-  //       prod.cantidad,
-  //       `${prod.price.toFixed(2)} Bs.`,
-  //       `${(prod.price * prod.cantidad).toFixed(2)} Bs.`,
-  //     ]),
-  //   });
-
-  //   // Precio total
-  //   doc.text(
-  //     `Precio Total: ${precioTotal.toFixed(2)} Bs.`,
-  //     14,
-  //     doc.lastAutoTable.finalY + 10
-  //   );
-
-  //   // Agregar imágenes
-  //   // listaProductos.forEach((prod, index) => {
-  //   //   if (prod.image) {
-  //   //     const img = new Image();
-  //   //     img.src = prod.image; // URL de la imagen
-
-  //   //     img.onload = function () {
-  //   //       // Verifica si la imagen se cargó correctamente
-  //   //       if (!img.complete || img.naturalWidth === 0) {
-  //   //         console.error(`Error cargando la imagen: ${prod.image}`);
-  //   //         return; // Si la imagen no se carga, no intentamos agregarla al PDF
-  //   //       }
-
-  //   //       // Determinar el formato de la imagen según su extensión
-  //   //       let imgFormat = "JPEG"; // Predeterminado
-  //   //       const extension = prod.image.split(".").pop().toLowerCase();
-
-  //   //       if (extension === "png") {
-  //   //         imgFormat = "PNG"; // Si es PNG
-  //   //       } else if (extension === "jpg" || extension === "jpeg") {
-  //   //         imgFormat = "JPEG"; // Si es JPG o JPEG
-  //   //       }
-
-  //   //       // Cuando la imagen se carga, se agrega al PDF
-  //   //       doc.addImage(
-  //   //         img,
-  //   //         imgFormat,
-  //   //         14,
-  //   //         doc.lastAutoTable.finalY + 15 + index * 60,
-  //   //         50,
-  //   //         50
-  //   //       );
-
-  //   //       // Si es la última imagen, guarda el PDF
-  //   //       if (index === listaProductos.length - 1) {
-  //   //         doc.save("cotizacion.pdf");
-  //   //       }
-  //   //     };
-
-  //   //     img.onerror = function () {
-  //   //       console.error(`Error al cargar la imagen: ${prod.image}`);
-  //   //     };
-  //   //   }
-  //   // });
-
-  //   // Si no hay imágenes, guarda el PDF de inmediato
-  //   if (listaProductos.every((prod) => !prod.image)) {
-  //     doc.save("cotizacion.pdf");
-  //   }
-  // };
   const handleGenerarPDF = async () => {
     const doc = new jsPDF();
-
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
     // Título
-    doc.setFontSize(18);
-    doc.text("Cotización de Productos", 14, 22);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("AINGTEL", pageWidth / 2, 14, { align: "center" });
+    doc.setFontSize(14);
+    doc.text("Alta Ingenieria y Telematica", pageWidth / 2, 20, {
+      align: "center",
+    });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.text(
+      "El Alto Zona Villa Exaltación Sección 1 Calle 3 Nº8 , La Paz, Bolivia",
+      pageWidth / 2,
+      23.5,
+      { align: "center" }
+    );
+    doc.text("Whatsapp. (591) 61233304", pageWidth / 2, 27, {
+      align: "center",
+    });
+    doc.text(
+      "Facebook: Aingtel      Correo: aingtelempresa@gmail.com",
+      pageWidth / 2,
+      30,
+      { align: "center" }
+    );
+    doc.setLineWidth(0.5);
+    doc.line(10, 31.5, pageWidth - 10, 31.5);
 
-    // Información del comprador
+    doc.setFontSize(14);
+    doc.text("COTIZACION", pageWidth / 2, 40, { align: "center" });
+    doc.setLineWidth(0.2);
+    doc.line(65, 45, pageWidth - 65, 45);
+    doc.setFontSize(9);
+    doc.text("Item: nro de item", 65, 50, { align: "left" });
+
     doc.setFontSize(12);
-    doc.text(`Cliente: ${form.nombre}`, 14, 30);
-    doc.text(`Correo: ${form.correo}`, 14, 36);
-    doc.text(`Teléfono: ${form.telefono}`, 14, 42);
-    doc.text(`Dirección: ${form.direccion}`, 14, 48);
+    doc.text("DATOS DEL VENDEDOR:", pageWidth / 2 - 50, 60, {
+      align: "center",
+    });
+    doc.setFontSize(10);
+    doc.text(`CI: ${dealer.ci}`, pageWidth / 2 - 50, 65, { align: "center" });
+    doc.text(`Nombre: ${dealer.name}`, pageWidth / 2 - 50, 70, {
+      align: "center",
+    });
+    doc.text(`Correo: ${dealer.email}`, pageWidth / 2 - 50, 75, {
+      align: "center",
+    });
+    doc.setFontSize(12);
+    doc.text("DATOS DEL COMPRADOR", pageWidth / 2 + 50, 60, {
+      align: "center",
+    });
+    doc.setFontSize(10);
+    doc.text(`Nombre: ${form.nombre}`, pageWidth / 2 + 50, 65, {
+      align: "center",
+    });
+    doc.text(`Telefono: ${form.telefono}`, pageWidth / 2 + 50, 70, {
+      align: "center",
+    });
+    doc.text(`Correo: ${form.correo}`, pageWidth / 2 + 50, 75, {
+      align: "center",
+    });
+    doc.text(`Direccion: ${form.direccion}`, pageWidth / 2 + 50, 80, {
+      align: "center",
+    });
 
     // Establecer el inicio de la tabla
-    let yOffset = 55;
+    let yOffset = 95;
 
     // Tabla de productos
     for (let i = 0; i < listaProductos.length; i++) {
@@ -252,9 +255,16 @@ const Quoter = () => {
     } else {
       setModal(false);
       console.log(form);
+      setCategoriaSeleccionada(0);
+      setProductoSeleccionado(null);
+      document.getElementById("cantidad").value = "";
+      setPrecio(0.0);
+      setListaProductos([]);
+      setPrecioTotal(0.0);
       handleGenerarPDF();
     }
   };
+  // console.log(user);
   return (
     <div className="mt-24 w-full h-full flex justify-center items-center sm:bg-orange-500 md:bg-red-500 lg:bg-blue-500 xl:bg-pink-500 2xl:bg-gray-500">
       <div className="flex flex-col items-center gap-3 w-full">
@@ -306,7 +316,7 @@ const Quoter = () => {
           <input
             className="w-[77%] py-2 pl-3 border border-gray-300 rounded-md"
             type="number"
-            // id="cantidad"
+            id="cantidad"
             placeholder="Cantidad"
             onChange={(e) => {
               setCantidad(parseInt(e.target.value) || 1);
@@ -462,7 +472,7 @@ const Quoter = () => {
             <p className="font-bold text-lg border-b-4 border-sky-700">
               Productos Agregados
             </p>
-            <form action="" className="w-full flex flex-col gap-2">
+            <form className="w-full flex flex-col gap-2">
               <input
                 type="text"
                 placeholder="Nombre"
