@@ -70,7 +70,7 @@ function Login() {
   }, [userAdmin]);
   useEffect(() => {
     if (userDealer) {
-      navigate("/Quoter");
+      navigate("/quoter");
     }
   }, [userDealer]);
   useEffect(() => {
@@ -87,7 +87,7 @@ function Login() {
   //   // Puedes realizar acciones adicionales cuando los usuarios cambien
   // }, [users]);
   return (
-    <div className=" sm:w-full h-[70vh] sm:h-[77vh] flex items-center justify-center">
+    <div className="mt-8 sm:w-full h-[70vh] sm:h-[77vh] flex items-center justify-center">
       <div className="w-full mt-14 h-full sm:w-[50%] md:w-[42%] lg:w-[35%] xl:w-[30%] 2xl:w-[25%] sm:p-3 sm:border-solid  sm:border-current sm:rounded-md sm:shadow-[0px_-1px_5px_1px_rgba(0,0,0,0.5)] flex flex-col items-center sm:h-[75%]">
         <div className="flex flex-col items-center py-9 gap-4 sm:py-2">
           <div className="w-28">
@@ -95,7 +95,7 @@ function Login() {
           </div>
           <p className="text-2xl">LOGIN</p>
         </div>
-        <div className="w-[85%] flex flex-col justify-center gap-4">
+        <form className="w-[85%] flex flex-col justify-center gap-4">
           <div className="w-[100%] px-4 py-2 flex flex-row items-center border border-2 border-gray-300 rounded-md ">
             <input
               className="w-full m-1 mr-2 text-lg placeholder:text-lg focus:outline-none bg-inherit"
@@ -130,7 +130,7 @@ function Login() {
               )}
             </div>
           </div>
-        </div>
+        </form>
         <button
           className="my-3 py-4 px-20 bg-[#08b4c4] border rounded-full font-bold text-white active:bg-[#057a82]"
           onClick={() => {

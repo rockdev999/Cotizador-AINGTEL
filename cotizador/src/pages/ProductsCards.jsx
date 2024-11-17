@@ -1,80 +1,70 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import UseForm from "../components/addproducts/UseForm";
-
-const initialProducts = [
-  {
-    id: 1,
-    name: "Camara Dahua",
-    category: "Videovigilancia",
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  {
-    id: 2,
-    name: "SwtichMikrotik",
-    category: "Redes y Comunicaciones",
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  {
-    id: 3,
-    name: "Central de Alarmas",
-    category: "Seguridad Electrónica",
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  {
-    id: 4,
-    name: "Video Portero",
-    category: "Sistemas Domóticos",
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  {
-    id: 5,
-    name: "Paneles Solares",
-    category: "Sistemas para Energía y Respaldo",
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  {
-    id: 6,
-    name: "Biometrico ZKTeco",
-    category: "Biométricos",
-    imageUrl: "https://via.placeholder.com/150",
-  },
-  {
-    id: 7,
-    name: "Cable electrico",
-    category: "Sistemas Eléctricos",
-    imageUrl: "https://via.placeholder.com/150",
-  },
-
-  // Agrega más productos si lo deseas
-];
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+// import { products } from "../data";
 
 function ProductCards() {
-  const [products, setProducts] = useState(initialProducts);
-
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/products")
+      .then((result) => {
+        setProducts(result.data);
+        console.log(result.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/categories")
+      .then((result) => {
+        setCategories(result.data);
+        console.log(result.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+  const cate = (product) => {
+    const categoryFound = categories.find(
+      (category) => category.id === product.category
+    );
+    return categoryFound ? categoryFound.name : "Categoría no encontrada";
+  };
   return (
-    <div className="p-8 bg-gray-100">
-      <h2 className="text-2xl font-bold text-center mb-4">Productos</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    <div className="mt-16 p-8 bg-gray-100">
+      <div className="w-full flex justify-center">
+        <p className="font-bold text-2xl border-b-4 border-sky-700 ">
+          COTIZACIÓN
+        </p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 p-5">
         {products.map((product) => (
           <div
-            key={product.id}
-            className="relative bg-white border border-black rounded-lg shadow-lg p-4"
+            key={product.code}
+            className="bg-white border border-black rounded-lg shadow-lg p-4"
           >
-            {/* Imagen del producto */}
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="w-full h-32 object-cover mb-4 rounded-lg"
-            />
+            {/* Contenedor de la imagen con un tamaño ajustado */}
+            <div className="w-full h-24 mb-4 flex items-center justify-center">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="max-w-full max-h-full object-contain rounded-md"
+              />
+            </div>
 
             {/* Información del producto */}
             <h3 className="text-lg font-semibold text-gray-800">
-              {product.name}
+              {product.name.toUpperCase()}
             </h3>
-            <p className="text-sm text-gray-600">{product.category}</p>
+            <p className="text-gray-600">
+              <strong>Categoria: </strong>
+              {cate(product)}
+            </p>
+            <p className="text-gray-600">
+              <strong>Descripcion: </strong> {product.description}
+            </p>
 
-            {/* Botón de acción */}
+            {/* Sección adicional para detalles */}
+            <div className="mt-2 text-gray-500 text-xs"></div>
           </div>
         ))}
       </div>

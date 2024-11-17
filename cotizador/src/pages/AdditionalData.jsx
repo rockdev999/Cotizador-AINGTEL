@@ -1,10 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import UseForm from "../components/addproducts/UseForm";
-import { useNavigate } from "react-router-dom";
 
 function AdditionalData() {
-  const navigate = useNavigate();
   const { form, dataForm } = UseForm({
     name: "",
     email: "",
@@ -12,7 +10,6 @@ function AdditionalData() {
     delivery_address: "",
   });
   const sendData = () => {
-    navigate("/quotes-list");
     console.log(form);
   };
 
@@ -53,7 +50,7 @@ function AdditionalData() {
       <div className="flex flex-col items-center">
         <Link
           className="bg-[#08b4c4] p-4 border-solid border-2 rounded-lg"
-          onClick={sendData()} // Cuando se hace clic, llama a la función 'sendData' para enviar los datos.
+          onClick={sendData} // Cuando se hace clic, llama a la función 'sendData' para enviar los datos.
         >
           Confirmar Pedido
         </Link>

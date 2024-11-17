@@ -35,6 +35,7 @@ function AddDealers() {
         .then(() => {
           setModal(true);
           setCorrect(true);
+          resetForm();
         })
         .catch((error) => {
           setModal(true);
@@ -56,12 +57,15 @@ function AddDealers() {
     },
     [adminAuth]
   );
+  const resetForm = () => {
+    document.getElementById("form").reset();
+  };
   return (
-    <div className="w-full pt-14 flex flex-col items-center">
+    <div className="w-full mt-20 flex flex-col items-center">
       <p className="pt-4 border-b-4 border-[#08b4c4] text-lg font-medium">
         AGREGAR VENDEDOR
       </p>
-      <div className="w-96 flex flex-col items-center p-4 gap-4">
+      <form id="form" className="w-96 flex flex-col items-center p-4 gap-4">
         <input
           className="w-full p-4 border-solid border-2 border-gray-400 rounded-lg placeholder:text-lg text-lg placeholder:text-gray-700"
           type="number"
@@ -104,7 +108,7 @@ function AddDealers() {
           name="address"
           onChange={dataForm}
         />
-      </div>
+      </form>
       <div className="flex flex-col items-center">
         <Link
           className="bg-[#08b4c4] p-4 border-solid border-2 rounded-lg"

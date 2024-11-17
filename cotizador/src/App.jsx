@@ -17,34 +17,36 @@ import { AdminAuthenticationProvider } from "./contexts/AdminAuthentication";
 import { DealerAuthenticationProvider } from "./contexts/DealerAuthentication";
 function App() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <BrowserRouter>
         <AdminAuthenticationProvider>
           <DealerAuthenticationProvider>
             <Navbar />
-            <Routes>
-              <Route path="/" element={<MainPage />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/products" element={<ProductsCards />} />
+            <div className="flex-grow">
+              <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/products" element={<ProductsCards />} />
 
-              <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login />} />
 
-              <Route path="/home-admin" element={<HomeAdmin />} />
+                <Route path="/home-admin" element={<HomeAdmin />} />
 
-              <Route path="/add-products" element={<AddProducts />} />
-              <Route path="/add-dealers" element={<AddDealers />} />
-              <Route path="/list-products" element={<ListProducts />} />
-              <Route path="/list-dealers" element={<ListDealers />} />
+                <Route path="/add-products" element={<AddProducts />} />
+                <Route path="/add-dealers" element={<AddDealers />} />
+                <Route path="/list-products" element={<ListProducts />} />
+                <Route path="/list-dealers" element={<ListDealers />} />
 
-              <Route path="/quoter" element={<Quoter />} />
-              <Route path="/additional-data" element={<AdditionalData />} />
-              <Route path="/quotes-list" element={<QuotesList />} />
-            </Routes>
+                <Route path="/quoter" element={<Quoter />} />
+                <Route path="/additional-data" element={<AdditionalData />} />
+                <Route path="/quotes-list" element={<QuotesList />} />
+              </Routes>
+            </div>
           </DealerAuthenticationProvider>
         </AdminAuthenticationProvider>
         <Footer />
       </BrowserRouter>
-    </>
+    </div>
   );
 }
 

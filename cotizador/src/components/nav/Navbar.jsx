@@ -4,19 +4,30 @@ import { useNavigate } from "react-router-dom";
 import { AdminAuthenticationContext } from "../../contexts/AdminAuthentication";
 import Login from "../../pages/Login";
 import { products } from "../../data";
+import { DealerAuthenticationContext } from "../../contexts/DealerAuthentication";
 // actualizado
 function App() {
   const [toggleMenu, setToggleMenu] = useState(false);
   // sm:bg-red-500 md:bg-orange-500 lg:bg-pink-500 xl:bg-blue-500 2xl:bg-sky-500
   const navigate = useNavigate();
   const { adminAuth, setAdminAuth } = useContext(AdminAuthenticationContext);
+  const { dealerAuth, setDealerAuth } = useContext(DealerAuthenticationContext);
   useEffect(function () {
     if (!adminAuth) {
       navigate("/login");
     }
   }, []);
-  const logout = () => {
+  useEffect(function () {
+    if (!dealerAuth) {
+      navigate("/login");
+    }
+  }, []);
+  const logoutAdmin = () => {
     setAdminAuth(false);
+    navigate("/login");
+  };
+  const logoutDealer = () => {
+    setDealerAuth(false);
     navigate("/login");
   };
   return (
@@ -28,10 +39,10 @@ function App() {
             {/* logo */}
             <div>
               <Link
-                href="/"
-                className="flex gap-1 font-bold text-gray-700 items-center "
+                to="/"
+                className="flex gap-1 font-bold text-gray-700 items-center"
               >
-                <span>LOGO</span>
+                <img className="w-24 h-full" src="logo.png" alt="" />
               </Link>
             </div>
             {/* primary */}
@@ -63,7 +74,7 @@ function App() {
                 </div>
               </div>
               <div>
-                {adminAuth ? (
+                {adminAuth && !dealerAuth ? (
                   <>
                     <Link
                       to="/home-admin"
@@ -72,8 +83,23 @@ function App() {
                       Administrador
                     </Link>
                     <Link
-                      onClick={logout}
-                      className=" p-2 border-solid rounded-lg bg-red-400 active:bg-[#057a82]"
+                      onClick={logoutAdmin}
+                      className="p-2 border-solid rounded-lg bg-red-400 active:bg-[#057a82]"
+                    >
+                      Cerrar Sesion
+                    </Link>
+                  </>
+                ) : dealerAuth && !adminAuth ? (
+                  <>
+                    <Link
+                      to="/quoter"
+                      className="py-2 px-3 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold lg:w-[12px]"
+                    >
+                      Cotizador
+                    </Link>
+                    <Link
+                      onClick={logoutDealer}
+                      className="p-2 border-solid rounded-lg bg-red-400 active:bg-[#057a82]"
                     >
                       Cerrar Sesion
                     </Link>
@@ -81,7 +107,7 @@ function App() {
                 ) : (
                   <Link
                     to="/login"
-                    className=" p-2 border-solid rounded-lg bg-[#08b4c4] active:bg-[#057a82]"
+                    className="p-2 border-solid rounded-lg bg-[#08b4c4] active:bg-[#057a82]"
                   >
                     Iniciar Sesion
                   </Link>
@@ -140,23 +166,50 @@ function App() {
             ) : (
               <></>
             )}
+            {dealerAuth ? (
+              <Link
+                to="/quoter"
+                onClick={() => setToggleMenu(false)}
+                className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold"
+              >
+                Cotizador
+              </Link>
+            ) : (
+              <></>
+            )}
             {adminAuth ? (
               <Link
                 onClick={() => {
                   setToggleMenu(false);
-                  logout();
+                  logoutAdmin();
                 }}
                 className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold bg-red-400 active:bg-[#057a82]"
               >
                 Cerrar Sesion
               </Link>
             ) : (
+              <></>
+            )}
+            {dealerAuth ? (
+              <Link
+                onClick={() => {
+                  setToggleMenu(false);
+                  logoutDealer();
+                }}
+                className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold bg-red-400 active:bg-[#057a82]"
+              >
+                Cerrar Sesion
+              </Link>
+            ) : (
+              <></>
+            )}
+            {!adminAuth && !dealerAuth && (
               <Link
                 to="/login"
                 onClick={() => setToggleMenu(false)}
                 className="py-1 px-1 rounded hover:text-blue-700 hover:underline hover:underline-offset-8 font-semibold bg-[#08b4c4] active:bg-[#057a82]"
               >
-                Iniciar Sesion
+                Iniciar Sesión
               </Link>
             )}
           </div>

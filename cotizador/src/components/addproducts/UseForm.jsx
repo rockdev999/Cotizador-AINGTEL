@@ -8,9 +8,13 @@ function UseForm(initialState) {
     const copy = { ...form, [name]: value };
     setForm(copy);
   }
+  const resetForm = () => {
+    setForm(initialState);
+  };
   return {
     form,
     dataForm,
+    resetForm,
   };
 }
 

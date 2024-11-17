@@ -7,8 +7,8 @@ import axios from "axios";
 function AddProducts() {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
-  const [cost, setCost] = useState(0);
-  const [price, setPrice] = useState(0);
+  const [cost, setCost] = useState(0.0);
+  const [price, setPrice] = useState(0.0);
   const [category, setCategory] = useState(0);
   const [description, setDescription] = useState("");
   const [modal, setModal] = useState(false);
@@ -29,7 +29,15 @@ function AddProducts() {
     const file = event.target.files[0];
     setImageFile(file);
   };
+
   const sendProduct = async () => {
+    console.log(name);
+    console.log(cost);
+    console.log(price);
+    console.log(code);
+    console.log(category);
+    console.log(description);
+    console.log(imageFile);
     if (
       name === "" ||
       cost === 0 ||
@@ -37,7 +45,9 @@ function AddProducts() {
       code === "" ||
       category === 0 ||
       description === "" ||
-      !imageFile
+      !imageFile ||
+      !cost.includes(".") ||
+      !price.includes(".")
     ) {
       setModal(true);
       setCorrect(false);
@@ -67,6 +77,7 @@ function AddProducts() {
           },
         });
         console.log("Producto enviado");
+        resetForm();
       } catch (error) {
         console.error("Error al enviar el producto:", error);
       }
@@ -77,31 +88,33 @@ function AddProducts() {
     }
   };
   const validatorCost = (num) => {
-    if (num.includes(".")) {
+    if (num.includes(",")) {
       alert(
-        "Los valores enteros en bolivianos no deben contener puntos, incluso si son miles. Solo los centavos deben ir separados por una coma. \nEjemplo: \n 12500,50"
+        "Los valores enteros en bolivianos no deben contener puntos, incluso si son miles. Solo los centavos deben ir separados por un punto. \nEjemplo: \n 12500.50"
       );
     } else {
-      num = num.replace(",", ".");
       setCost(num);
     }
   };
   const validatorPrice = (num) => {
-    if (num.includes(".")) {
+    if (num.includes(",")) {
       alert(
-        "Los valores enteros en bolivianos no deben contener puntos, incluso si son miles. Solo los centavos deben ir separados por una coma. \nEjemplo: \n 12500,50"
+        "Los valores enteros en bolivianos no deben contener puntos, incluso si son miles. Solo los centavos deben ir separados por un punto. \nEjemplo: \n 12500.50"
       );
+      // setAux1(aux1.slice(0, -1));
     } else {
-      num = num.replace(",", ".");
       setPrice(num);
     }
   };
+  const resetForm = () => {
+    document.getElementById("form").reset();
+  };
   return (
-    <div className="w-full pt-14 flex flex-col items-center">
+    <div className="w-full mt-20 flex flex-col items-center">
       <p className="pt-4 border-b-4 border-[#08b4c4] text-lg font-medium">
         AGREGAR PRODUCTO
       </p>
-      <div className="flex flex-col items-center p-4 gap-4">
+      <form id="form" className="flex flex-col items-center p-4 gap-4">
         <input
           className="w-full p-4 border-solid border-2 border-gray-400 rounded-lg placeholder:text-lg text-lg placeholder:text-gray-700"
           type="text"
@@ -111,27 +124,32 @@ function AddProducts() {
             setName(e.target.value);
           }}
         />
-        <div className="flex flex-row justify-center gap-4">
-          <input
-            className="w-2/5 p-4 border-solid border-2 border-gray-400 rounded-lg placeholder:text-lg text-lg placeholder:text-gray-700"
-            type="text"
-            placeholder="Costo"
-            step="0.01"
-            name="cost"
-            onChange={(e) => {
-              validatorCost(e.target.value);
-            }}
-          />
-          <input
-            className="w-2/5 p-4 border-solid border-2 border-gray-400 rounded-lg placeholder:text-lg text-lg placeholder:text-gray-700"
-            type="text"
-            placeholder="Precio"
-            step="0.01"
-            name="price"
-            onChange={(e) => {
-              validatorPrice(e.target.value);
-            }}
-          />
+        <div>
+          <div className="flex flex-row justify-center gap-4">
+            <input
+              className="w-2/5 p-4 border-solid border-2 border-gray-400 rounded-lg placeholder:text-lg text-lg placeholder:text-gray-700"
+              type="text"
+              placeholder="Costo"
+              step="0.01"
+              name="cost"
+              onChange={(e) => {
+                validatorCost(e.target.value);
+              }}
+            />
+            <input
+              className="w-2/5 p-4 border-solid border-2 border-gray-400 rounded-lg placeholder:text-lg text-lg placeholder:text-gray-700"
+              type="text"
+              placeholder="Precio"
+              step="0.01"
+              name="price"
+              onChange={(e) => {
+                validatorPrice(e.target.value);
+              }}
+            />
+          </div>
+          <p className="text-sm text-gray-500 text-center dark:text-gray-500">
+            solo manejar (.) en caso de decimales. 12500.70
+          </p>
         </div>
         <div className="w-[95%] flex flex-col">
           <input
@@ -159,7 +177,9 @@ function AddProducts() {
             className="w-[95%] bg-transparent p-4 outline-none focus:ring-0 text-gray-700"
             name="category"
             onChange={(e) => {
-              setCategory(e.target.value);
+              e.target.value === 0
+                ? alert("elija una categoria")
+                : setCategory(e.target.value);
             }}
           >
             <option value="0">Categoría</option>
@@ -180,7 +200,7 @@ function AddProducts() {
           }}
           placeholder="Descripcion"
         ></textarea>
-      </div>
+      </form>
       <div className="flex flex-col items-center">
         <Link
           className="bg-[#08b4c4] p-4 border-solid border-2 rounded-lg active:bg-[#057a82] cursor-pointer"

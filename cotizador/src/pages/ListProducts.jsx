@@ -1,11 +1,10 @@
-import { products } from "../data";
-import { categories } from "../data";
 import { AdminAuthenticationContext } from "../contexts/AdminAuthentication";
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useDebugValue, useEffect, useState } from "react";
 import axios from "axios";
 function ListProducts() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [xcode, setXcode] = useState("");
   const [act, setAct] = useState(false);
   const [found, setFound] = useState([]);
@@ -20,6 +19,15 @@ function ListProducts() {
       })
       .catch((error) => console.log(error));
   };
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/categories")
+      .then((result) => {
+        setCategories(result.data);
+        console.log(result.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
   useEffect(
     function () {
       if (adminAuth) {
@@ -30,7 +38,7 @@ function ListProducts() {
     },
     [adminAuth]
   );
-  console.log(products);
+  // console.log(products);
   const cate = (product) => {
     const categoryFound = categories.find(
       (category) => category.id === product.category
@@ -58,7 +66,7 @@ function ListProducts() {
       .catch((error) => console.log(error));
   };
   return (
-    <div className="pt-14">
+    <div className="pt-20">
       <div className="w-full flex justify-center items-center py-5 flex-col gap-2">
         <div className="w-[70%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w[25%] flex border border-2 rounded-md p-2">
           <input
