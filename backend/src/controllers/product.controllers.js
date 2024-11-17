@@ -3,17 +3,6 @@ import multer from "multer";
 import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
-// export const getProducts = async (req, res) => {
-//   try {
-//     const [rows] = await connection.query("SELECT * FROM Product");
-//     console.log(rows);
-
-//     res.status(200).json(rows);
-//   } catch (error) {
-//     console.log(error);
-//     res.send(500).status(500);
-//   }
-// };
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const disk = multer.diskStorage({
@@ -46,39 +35,18 @@ export const getProducts = async (req, res) => {
   }
 };
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, path.join(__dirname, "../../uploads")); // Asegúrate de que esta ruta sea accesible
-//   },
-//   filename: (req, file, cb) => {
-//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-//     cb(null, uniqueSuffix + path.extname(file.originalname));
-//   },
-// });
-
-// export const upload = multer({ storage: storage });
-
 export const createProduct = async (req, res) => {
   try {
-    // `fileUpload` ya se aplicó como middleware en la ruta, por lo que aquí `req.file` debería estar disponible.
-
-    // Verificar si se subió una imagen
     if (!req.file) {
       return res.status(400).json({ message: "No se recibió ninguna imagen" });
     }
-
-    // Obtener los datos del cuerpo de la solicitud
     const { code, name, cost, price, category, description } = req.body;
-    const imagePath = req.file.filename; // Usar `filename` en lugar de `originalname`
-
-    // Verificar que los campos obligatorios estén presentes
+    const imagePath = req.file.filename;
     if (!code || !name || !cost || !price || !category || !description) {
       return res
         .status(400)
         .json({ message: "Todos los campos son obligatorios" });
     }
-
-    // Hacer el INSERT en la base de datos
     const query = `INSERT INTO product (code, name, cost, price, category, description, image) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     const values = [code, name, cost, price, category, description, imagePath];
 
@@ -105,6 +73,7 @@ export const getProduct = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Error al obtener el producto", error });
   }
 };
 export const deleteProduct = async (req, res) => {
@@ -126,6 +95,7 @@ export const deleteProduct = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Error al eliminar el producto", error });
   }
 };
 
